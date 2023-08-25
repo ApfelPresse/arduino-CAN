@@ -53,17 +53,17 @@ int ESP32SJA1000Class::begin(long baudRate)
 
   _loopback = false;
 
-  DPORT_CLEAR_PERI_REG_MASK(DPORT_PERIP_RST_EN_REG, DPORT_CAN_RST);
-  DPORT_SET_PERI_REG_MASK(DPORT_PERIP_CLK_EN_REG, DPORT_CAN_CLK_EN);
+  DPORT_CLEAR_PERI_REG_MASK(DPORT_PERIP_RST_EN_REG, DPORT_WDG_RST);
+  DPORT_SET_PERI_REG_MASK(DPORT_PERIP_CLK_EN_REG, DPORT_USB_CLK_EN);
 
   // RX pin
   gpio_set_direction(_rxPin, GPIO_MODE_INPUT);
-  gpio_matrix_in(_rxPin, CAN_RX_IDX, 0);
+  gpio_matrix_in(_rxPin, TWAI_RX_IDX, 0);
   gpio_pad_select_gpio(_rxPin);
 
   // TX pin
   gpio_set_direction(_txPin, GPIO_MODE_OUTPUT);
-  gpio_matrix_out(_txPin, CAN_TX_IDX, 0, 0);
+  gpio_matrix_out(_txPin, TWAI_TX_IDX, 0, 0);
   gpio_pad_select_gpio(_txPin);
 
   modifyRegister(REG_CDR, 0x80, 0x80); // pelican mode
@@ -156,8 +156,8 @@ void ESP32SJA1000Class::end()
     _intrHandle = NULL;
   }
 
-  DPORT_SET_PERI_REG_MASK(DPORT_PERIP_RST_EN_REG, DPORT_CAN_RST);
-  DPORT_CLEAR_PERI_REG_MASK(DPORT_PERIP_CLK_EN_REG, DPORT_CAN_CLK_EN);
+  DPORT_SET_PERI_REG_MASK(DPORT_PERIP_RST_EN_REG, DPORT_WDG_RST);
+  DPORT_CLEAR_PERI_REG_MASK(DPORT_PERIP_CLK_EN_REG, DPORT_USB_CLK_EN);
 
   CANControllerClass::end();
 }
